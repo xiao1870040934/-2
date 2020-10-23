@@ -1,0 +1,249 @@
+   package work;
+import java.util.Scanner;
+class Staff{
+	private String staffNo;//工号
+	private String staffName;//姓名
+	private int staffClass;//岗位类别
+	private String staffPosition;//职位
+	private double  basicSalary;//工资
+	public String getStaffNo(){
+		return staffNo;
+	    }
+	public void setStaffNo(String staffNo){
+		this.staffNo=staffNo;
+	    }
+	public String getStaffName(){
+		return staffName;
+		}
+	public void setStaffName(String staffName){
+		this.staffName=staffName;
+		}
+	public int getStaffClass(){
+		return staffClass;
+	    }
+	public void setStaffClass(int staffClass){
+		this.staffClass=staffClass;
+		}
+	public String getStaffPosition(){
+		return staffPosition;
+	    }
+	public void setStaffPosition(String staffPosition){
+		this.staffPosition=staffPosition;
+	    }
+	public double getBasicSalary() {
+		return basicSalary;
+	    }
+	public void setBasicSalary(double basicSalary) {
+		this.basicSalary=basicSalary;
+	    }
+	//基本信息增加
+	public void addBasicInfo() {
+		Scanner in=new Scanner(System.in);
+		Scanner inStr=new Scanner(System.in);
+		System.out.println("请输入员工基本信息：");
+		System.out.print("工号：");
+		staffNo=inStr.nextLine();
+		System.out.print("姓名：");
+		staffName=inStr.nextLine();
+		System.out.print("岗位类别：（1-行政人员；2-技术人员；3-销售人员）");
+		staffClass=in.nextInt();
+		//staffClass进行校验
+		while(staffClass!=1&&staffClass!=2&&staffClass!=3) {
+			System.out.print("岗位类别输入无效！请重新输入：");
+			staffClass=in.nextInt();
+		}
+		    System.out.print("员工职位：");
+		    staffPosition=inStr.nextLine();
+		    System.out.print("基本工资：");
+		    basicSalary=in.nextDouble();
+		 //basicSalary的校验
+		 while(basicSalary<0) {
+			 System.out.print("基本工资不能小于0！请重新输入：");
+			 basicSalary=in.nextDouble();
+		 }
+	}
+	//基本信息显示
+	public void showBasicInfo() {
+		System.out.print("员工信息：");
+		System.out.print("工号\t姓名\t岗位类别\t员工职位\t基本工资");
+		System.out.print(staffNo+"\t"+staffName+"\t"+staffClass+"\t"+staffPosition+"\t"+basicSalary);}
+	public void showBasicInfoWhihoutTitle() {
+			System.out.println(staffNo+"\t"+staffName+"\t"+staffClass+"\t"+staffPosition+"\t"+basicSalary);
+		}
+	}
+class StaffSet{
+	Staff []staff;
+	int staffNum;
+	public StaffSet() {
+		staff=new Staff[100];
+		staffNum=1;
+	}
+	//增加员工信息
+	public void addStaff() {
+		boolean flag=true;
+		while(flag&&staffNum<staff.length-1) {
+			staffNum++;
+			staff[staffNum]=new Staff();
+			staff[staffNum].addBasicInfo();
+			System.out.print("按Q键退出，其他键继续输入");
+			Scanner inStr=new Scanner(System.in);
+			String s=inStr.nextLine();
+			if(s.length()==0)flag=true;
+			else
+				if((s.charAt(0)=='Q')||(s.charAt(0)=='q'))flag=false;
+				else flag=true;
+		}
+	}
+	//删除员工基本信息
+	public void deleteStaff() {
+		Scanner inStr=new Scanner(System.in);
+		System.out.print("请输入要删除的员工工号：");
+		String staffNo=inStr.nextLine();
+		int index=indexOf(staffNo);//查找是否存在该员工
+		if(index==-1) {
+			System.out.println("不存在该员工工号为："+staffNo+"的员工");
+			return;
+		}
+		for(int i=index;i<staffNum;i++) {
+			staff[i]=staff[i+1];	
+		}
+		System.out.println("员工号"+staffNo+"已被删除！");
+		staffNum--;
+	}
+	//修改员工基本信息
+	public void editStaff(){
+		Scanner inStr=new Scanner(System.in);
+		System.out.print("请输入要修改的员工工号：");
+		String staffNo=inStr.nextLine();
+		int index=indexOf(staffNo);//查找是否存在该员工
+		if(index==-1) {
+			System.out.println("不存在员工工号为："+staffNo+"的员工");
+			return;
+		}
+		staff[index].showBasicInfo();
+		System.out.println("请修改相应属性的值，如不修改，则直接回车：");
+		System.out.print("姓名：");
+		String staffName=inStr.nextLine();
+		System.out.print("岗位类别：（1-行政人员；2-技术人员；3-销售人员）");
+		String staffClass=inStr.nextLine();
+		//staffClass进行校验
+		if(!staffClass.isEmpty())
+			while(!staffClass.isEmpty()&&staffClass.charAt(0)!='1'
+			&&staffClass.charAt(0)!='2'&&staffClass.charAt(0)!='3') {
+				System.out.print("岗位类别输出无效！请重新输入：");
+				staffClass=inStr.nextLine();
+			}
+		System.out.print("员工职位：");
+		String staffPosition=inStr.nextLine();
+		System.out.print("基本工资");
+		String basicSalary=inStr.nextLine();
+		//basicSalary进行校验
+		if(!basicSalary.isEmpty()) {
+			while(!basicSalary.isEmpty()&&Double.parseDouble(basicSalary)<0) {
+				System.out.print("基本工资不能小于0！请重新输入：");
+			}
+		}
+		if(!staffName.isEmpty())
+			staff[index].setStaffName(staffName);
+		if(!staffName.isEmpty())
+			staff[index].setStaffClass(Integer.parseInt(staffClass));
+		if(!staffName.isEmpty())
+			staff[index].setStaffPosition(staffPosition);
+		if(!staffName.isEmpty())
+			staff[index].setStaffName(staffName);
+		if(!staffName.isEmpty())
+			staff[index].setBasicSalary(Double.parseDouble(basicSalary));
+	}
+	//按编号查询，若找到则返回该对象的下标，否则返回-1
+	private int indexOf(String staffNo) {
+		int index=-1;
+		for(int i=0;i<staffNum;i++) {
+			if(staff[i].getStaffNo().equals(staffNo)) {
+				index=i;
+				break;
+			}
+		}
+		return index;
+	}
+	//查询员工基本信息
+	public void queryStaff() {
+		Scanner inStr=new Scanner(System.in);
+		System.out.print("请输入要查询的员工工号：");
+		String staffNo=inStr.nextLine();//查找是否存在该员工
+		int index=indexOf(staffNo);
+		if(index==-1) {
+			System.out.println("不存在员工工号为"+staffNo+"的员工");
+			return;
+		}
+		staff[index].showBasicInfo();
+	}
+	//显示员工基本信息
+	public void showStaff() {
+		System.out.println("员工信息:");
+		System.out.println("工号\t姓名\t岗位类别\t员工职位\t基本工资");
+		for(int i=0;i<=staffNum;i++) {
+			staff[i].showBasicInfoWhihoutTitle();
+		}
+	}
+} 
+ class Menu{
+	StaffSet staffSet;
+	public Menu() {
+		staffSet=new StaffSet();
+	}
+	public int menu() {
+		System.out.println("\n\t\t新科技公司员工工资管理系统");
+		System.out.println("\n");
+		System.out.println("\t************************************");
+		System.out.println("\t 1.基本信息增加            6.工资信息增加");
+		System.out.println("\t 2.基本信息删除            7.工资信息删除");
+		System.out.println("\t 3.基本信息修改            8.工资信息修改");
+		System.out.println("\t 4.基本信息查询            9.工资信息查询");
+		System.out.println("\t 5.基本信息查询           10.工资信息查询");
+		System.out.println("\t 0.退出");
+		System.out.println("\t************************************");
+		System.out.println("请输入操作编号：");
+		Scanner in=new Scanner(System.in);
+		int choice=in.nextInt();
+		while(choice<0||choice>10) {
+			System.out.println("输入的编号无效，请重新输入操作编号：");
+			choice=in.nextInt();
+		}
+		return choice;
+	}
+	public void selectOperat() {
+		int choice;
+		choice=menu();//调用主菜单
+		switch(choice) {
+		case 1:{staffSet.addStaff();
+		       break;}
+		case 2:{staffSet.deleteStaff();
+	       break;}
+		case 3:{staffSet.deleteStaff();
+	       break;}
+		case 4:{staffSet.queryStaff();
+	       break;}
+		case 5:{staffSet.showStaff();
+	       break;}
+		case 6:{System.out.println("此处调用工资增加方法");break;}
+		case 7:{System.out.println("此处调用工资删除方法");break;}
+		case 8:{System.out.println("此处调用工资修改方法");break;}
+		case 9:{System.out.println("此处调用工资查询方法");break;}
+		case 10:{System.out.println("此处调用工资显示方法");break;}
+		case 0:{System.out.println("感谢使用本系统，再见！");System.exit(0);}
+		}
+		System.out.print("按继续键继续");
+		Scanner in=new Scanner(System.in);
+		in.nextLine();
+		selectOperat();
+	}
+}
+public class Work {
+
+	public static void main(String[] args) {
+		// TODO 自动生成的方法存根
+		Menu menu=new Menu();
+		menu.selectOperat();
+
+	}
+}
